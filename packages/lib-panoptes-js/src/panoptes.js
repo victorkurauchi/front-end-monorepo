@@ -1,6 +1,6 @@
 /* global localStorage */
 
-const superagent = require('superagent')
+const Frisbee = require('frisbee')
 const { config } = require('./config')
 
 function handleMissingParameter (message) {
@@ -15,27 +15,36 @@ function checkForAdminFlag () {
   return undefined
 }
 
+const headers = {
+  'Accept': 'application/vnd.api+json; version=1',
+  'Content-Type': 'application/json'
+}
+
+const frisbee = new Frisbee({
+  headers
+})
+
+function resetAuthorization (authorization) {
+  if (authorization) frisbee.auth()
+}
+
 // TODO: Consider how to integrate a GraphQL option
 function get (endpoint, query, authorization = '', host) {
+  let fullQuery
   const defaultParams = { admin: checkForAdminFlag(), http_cache: true }
-
-  if (!endpoint) return handleMissingParameter('Request needs a defined resource endpoint')
   const apiHost = host || config.host
-  const request = superagent.get(`${apiHost}${endpoint}`)
-    .set('Content-Type', 'application/json')
-    .set('Accept', 'application/vnd.api+json; version=1')
-
-  if (authorization) request.set('Authorization', authorization)
+  if (!endpoint) return handleMissingParameter('Request needs a defined resource endpoint')
+  if (authorization) frisbee.jwt(authorization)
 
   if (query && Object.keys(query).length > 0) {
     if (typeof query !== 'object') return Promise.reject(new TypeError('Query must be an object'))
-    const fullQuery = Object.assign({}, query, defaultParams)
-    request.query(fullQuery)
+    fullQuery = Object.assign({}, query, defaultParams)
   } else {
-    request.query(defaultParams)
+    fullQuery = defaultParams
   }
 
-  return request.then(response => response)
+  return frisbee.get(`${apiHost}${endpoint}`, { body: fullQuery }).then(response => response)
+    .then(resetAuthorization(authorization))
 }
 
 function post (endpoint, data, authorization = '', host) {
@@ -43,50 +52,36 @@ function post (endpoint, data, authorization = '', host) {
 
   if (!endpoint) return handleMissingParameter('Request needs a defined resource endpoint')
   const apiHost = host || config.host
+  if (authorization) frisbee.jwt(authorization)
 
-  const request = superagent.post(`${apiHost}${endpoint}`)
-    .set('Content-Type', 'application/json')
-    .set('Accept', 'application/vnd.api+json; version=1')
-
-  if (authorization) request.set('Authorization', authorization)
-
-  return request.query(defaultParams)
-    .send(data)
+  return frisbee.post(`${apiHost}${endpoint}`, { body: data, query: defaultParams })
     .then(response => response)
+    .then(resetAuthorization(authorization))
 }
 
 function put (endpoint, data, authorization = '', host) {
   const defaultParams = { admin: checkForAdminFlag(), http_cache: true }
+  const apiHost = host || config.host
 
   if (!endpoint) return handleMissingParameter('Request needs a defined resource endpoint')
   if (!data) return handleMissingParameter('Request needs a defined data for update')
-  const apiHost = host || config.host
+  if (authorization) frisbee.jwt(authorization)
 
-  const request = superagent.put(`${apiHost}${endpoint}`)
-    .set('Content-Type', 'application/json')
-    .set('Accept', 'application/vnd.api+json; version=1')
-
-  if (authorization) request.set('Authorization', authorization)
-
-  return request.query(defaultParams)
-    .send(data)
+  return frisbee.put(`${apiHost}${endpoint}`, { body: defaultParams })
     .then(response => response)
+    .then(resetAuthorization(authorization))
 }
 
 function del (endpoint, authorization = '', host) {
   const defaultParams = { admin: checkForAdminFlag(), http_cache: true }
-
-  if (!endpoint) return handleMissingParameter('Request needs a defined resource endpoint')
   const apiHost = host || config.host
 
-  const request = superagent.delete(`${apiHost}${endpoint}`)
-    .set('Content-Type', 'application/json')
-    .set('Accept', 'application/vnd.api+json; version=1')
+  if (!endpoint) return handleMissingParameter('Request needs a defined resource endpoint')
+  if (authorization) frisbee.jwt(authorization)
 
-  if (authorization) request.set('Authorization', authorization)
-
-  return request.query(defaultParams)
+  return frisbee.del(`${apiHost}${endpoint}`, { body: defaultParams })
     .then(response => response)
+    .then(resetAuthorization(authorization))
 }
 
 const requests = {

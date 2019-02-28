@@ -4,7 +4,7 @@ const nock = require('nock')
 const { config } = require('./config')
 const panoptes = require('./panoptes')
 
-describe('panoptes.js', function () {
+describe.only('panoptes.js', function () {
   let scope
 
   describe('get', function () {
@@ -35,7 +35,7 @@ describe('panoptes.js', function () {
 
     it('should add the query object to the URL if defined', async function () {
       const response = await panoptes.get(endpoint, { page: '2', page_size: '30' })
-      expect(response.req.path.includes('?page=2&page_size=30')).to.be.true
+      expect(response.url.includes('?page=2&page_size=30')).to.be.true
     })
 
     it('should error if query params are defined but are not an object', async function () {
@@ -167,28 +167,32 @@ describe('panoptes.js', function () {
         .reply(200, expectedResponse)
 
       const response = await panoptes[method].apply(this, methodArgs)
-      expect(response.request.url.includes(mockAPIHost)).to.be.true
+      expect(response.url.includes(mockAPIHost)).to.be.true
     })
   }
 
   function testConfigHost (method, endpoint, update = null) {
     it('should use the host defined in the config if a host parameter isn\'t defined', async function () {
       const response = await panoptes[method](endpoint, update)
-      expect(response.request.url.includes(config.host)).to.be.true
+      expect(response.url.includes(config.host)).to.be.true
     })
   }
 
   function testContentTypeHeader (method, endpoint, update = null) {
     it('should add the `Content-Type` header to the request', async function () {
       const response = await panoptes[method](endpoint, update)
-      expect(response.req.headers['content-type']).to.equal('application/json')
+      expect(response.headers.get('content-type')).to.equal('application/json')
     })
   }
 
   function testAcceptHeader (method, endpoint, update = null) {
     it('should add the `Accept` header to the request', async function () {
       const response = await panoptes[method](endpoint, update)
-      expect(response.req.headers['accept']).to.equal('application/vnd.api+json; version=1')
+      for (var value of response.headers.entries()) {
+        console.log(value);
+      }
+      console.log(response.headers)
+      expect(response.headers.get('accept')).to.equal('application/vnd.api+json; version=1')
     })
   }
 
@@ -200,7 +204,7 @@ describe('panoptes.js', function () {
         : [endpoint, update, '12345']
 
       const response = await panoptes[method].apply(this, methodArgs)
-      expect(response.req.headers['authorization']).to.equal('12345')
+      expect(response.headers.get('authorization')).to.equal('12345')
     })
   }
 
