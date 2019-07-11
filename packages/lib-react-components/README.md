@@ -28,9 +28,15 @@ import { ZooFooter } from '@zooniverse/react-components';
 
 `npm test` to run mocha tests.
 
+## Building
+
+To build a production version, run `yarn build`.
+
+To build a production version with [`inspectpack`](https://github.com/FormidableLabs/inspectpack) enabled, run `yarn build:analyze`. This will help you identify duplicate packages that will inflate the build.
+
 ## Contributing
 
-Components should be added to the `src/components` folder and an export to `src/index.js`. Each component should be tested, documented readme, and have a storybook example added. 
+Components should be added to the `src/components` folder and an export to `src/index.js`. Each component should be tested, documented readme, and have a storybook example added.
 
 ### Technologies and tools we use
 
@@ -46,4 +52,3 @@ Components should be added to the `src/components` folder and an export to `src/
   - [Chai](https://www.chaijs.com/) - BDD/TDD assertion library
   - [Sinon](https://sinonjs.org) - test spies, mocks, and stubs
   - [Enzyme](https://airbnb.io/enzyme/) - testing utility for React
-

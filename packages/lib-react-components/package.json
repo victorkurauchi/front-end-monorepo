@@ -7,6 +7,7 @@
   "main": "dist/main.js",
   "scripts": {
     "build": "webpack --config ./webpack.dist.js",
+    "build:analyze": "ANALYZE=true webpack --config ./webpack.dist.js",
     "build:storybook": "build-storybook",
     "lint": "zoo-standard --fix {.storybook,src,stories,test}/**/*.{js,jsx} | snazzy",
     "start": "start-storybook -p 6006",

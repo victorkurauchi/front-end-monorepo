@@ -3,6 +3,15 @@ const { DuplicatesPlugin } = require('inspectpack/plugin')
 const path = require('path')
 const PeerDepsExternalsPlugin = require('peer-deps-externals-webpack-plugin')
 
+const plugins = [
+  new CleanWebpackPlugin(),
+  new PeerDepsExternalsPlugin()
+]
+
+if (process.env.ANALYZE === 'true') {
+  plugins.push(new DuplicatesPlugin())
+}
+
 module.exports = {
   devtool: 'source-map',
   entry: './src/index.js',
@@ -25,11 +34,7 @@ module.exports = {
     // Workaround for webpack/webpack#6522
     globalObject: `typeof self !== 'undefined' ? self : this`
   },
-  plugins: [
-    new DuplicatesPlugin(),
-    new CleanWebpackPlugin(),
-    new PeerDepsExternalsPlugin()
-  ],
+  plugins,
   resolve: {
     alias: {
       inherits: path.resolve(__dirname, '../../node_modules/inherits'),

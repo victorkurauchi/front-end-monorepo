@@ -8,6 +8,14 @@ const EnvironmentWebpackPlugin = new webpack.EnvironmentPlugin({
   PANOPTES_ENV: 'production'
 })
 
+const plugins = [
+  EnvironmentWebpackPlugin,
+]
+
+if (process.env.ANALYZE === 'true') {
+  plugins.push(new DuplicatesPlugin())
+}
+
 module.exports = {
   devtool: 'source-map',
   entry: './src/components/Classifier/index.js',
@@ -39,10 +47,7 @@ module.exports = {
     libraryTarget: 'umd',
     umdNamedDefine: true
   },
-  plugins: [
-    new DuplicatesPlugin(),
-    EnvironmentWebpackPlugin,
-  ],
+  plugins,
   resolve: {
     alias: {
       inherits: path.resolve(__dirname, '../../node_modules/inherits'),
