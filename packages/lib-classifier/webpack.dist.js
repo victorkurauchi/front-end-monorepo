@@ -1,5 +1,6 @@
 const path = require('path')
 const webpack = require('webpack')
+const { DuplicatesPlugin } = require('inspectpack/plugin')
 
 const EnvironmentWebpackPlugin = new webpack.EnvironmentPlugin({
   DEBUG: false,
@@ -39,6 +40,14 @@ module.exports = {
     umdNamedDefine: true
   },
   plugins: [
+    new DuplicatesPlugin(),
     EnvironmentWebpackPlugin,
-  ]
+  ],
+  resolve: {
+    alias: {
+      inherits: path.resolve(__dirname, '../../node_modules/inherits'),
+      mobx: path.resolve(__dirname, 'node_modules/mobx'),
+      'mobx-state-tree': path.resolve(__dirname, 'node_modules/mobx-state-tree'),
+    },
+  }
 }
