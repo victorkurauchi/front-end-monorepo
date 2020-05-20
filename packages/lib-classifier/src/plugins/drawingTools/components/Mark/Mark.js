@@ -12,7 +12,7 @@ const StyledGroup = styled('g')`
     outline: none;
   }
   :hover {
-    ${props => props.dragging ? 
+    ${props => props.dragging ?
       css`cursor: grabbing;` :
       css`cursor: grab;`
     }

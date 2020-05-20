@@ -8,7 +8,7 @@ import TranscribedLines from './components/TranscribedLines'
 import SubTaskPopup from './components/SubTaskPopup'
 
 const StyledRect = styled('rect')`
-  ${props => props.disabled ? 
+  ${props => props.disabled ?
     css`cursor: not-allowed;` :
     css`cursor: crosshair;`
   }
@@ -58,11 +58,16 @@ function InteractionLayer ({
       return true
     }
 
-    const activeMark = activeTool.createMark({
+    const activeMark = activeTool.onPointerDown({
       id: cuid(),
       frame,
       toolIndex: activeToolIndex
-    })
+    }, convertEvent(event))
+
+    if (activeMark.finished) {
+      console.log('TODO: Finish active mark');
+    }
+
     activeMark.initialPosition(convertEvent(event))
     setActiveMark(activeMark)
     setCreating(true)
