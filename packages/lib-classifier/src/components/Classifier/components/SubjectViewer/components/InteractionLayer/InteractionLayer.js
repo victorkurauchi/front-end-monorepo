@@ -70,7 +70,7 @@ function InteractionLayer ({
     activeMark.initialPosition(convertEvent(event))
     setActiveMark(activeMark)
     setCreating(true)
-    activeMark.setSubTaskVisibility(false)
+    // activeMark.setSubTaskVisibility(false)
     return false
   }
 
@@ -83,18 +83,19 @@ function InteractionLayer ({
   }
 
   function onFinish (event, node) {
-    const { target, pointerId } = event
-
+    const { currenTarget, pointerId } = event
+    console.log('onFinish', event)
     setCreating(false)
     if (activeMark && !activeMark.isValid) {
       activeTool.deleteMark(activeMark)
       setActiveMark(undefined)
     } else {
-      activeMark.setSubTaskVisibility(true, node)
+      // activeMark.setSubTaskVisibility(true, node)
     }
 
-    if (target && pointerId) {
-      target.releasePointerCapture(pointerId)
+    if (currenTarget && pointerId) {
+      console.log('release pointer')
+      currentTarget.releasePointerCapture(pointerId)
     }
   }
 
@@ -118,7 +119,6 @@ function InteractionLayer ({
       <TranscribedLines
         scale={scale}
       />
-      <SubTaskPopup />
       {marks &&
         <DrawingToolMarks
           activeMark={activeMark}

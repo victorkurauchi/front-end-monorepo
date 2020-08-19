@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types'
-import React, { forwardRef } from 'react'
+import React, { forwardRef, useEffect } from 'react'
 import styled, { css, withTheme } from 'styled-components'
 import draggable from '../draggable'
+import SubTaskPopup from '../../../../components/Classifier/components/SubjectViewer/components/InteractionLayer/components/SubTaskPopup'
 
 const STROKE_WIDTH = 2
 const SELECTED_STROKE_WIDTH = 4
@@ -31,6 +32,24 @@ const Mark = forwardRef(function Mark ({
   scale,
   theme
 }, ref) {
+  const [subTaskVisibility, setSubTaskVisibility] = React.useState(false)
+  const [bounds, setBounds] = React.useState({})
+  function handleFinish (event) {
+    onFinish(event)
+    setSubTaskVisibility(true)
+  }
+
+  useEffect(() => {
+    if (mark.tasks && isActive) {
+      handleFinish({})
+      setBounds(ref.current?.getBoundingClientRect() || {})
+    }
+
+    if (ref.current && ref.current !== document.activeElement) {
+      ref.current.focus()
+    }
+  }, [])
+
   const { tool } = mark
   const mainStyle = {
     color: tool && tool.color ? tool.color : 'green',
@@ -50,13 +69,13 @@ const Mark = forwardRef(function Mark ({
       case 'Enter': {
         event.preventDefault()
         event.stopPropagation()
-        onFinish(event)
+        handleFinish(event)
         return false
       }
       case ' ': {
         event.preventDefault()
         event.stopPropagation()
-        onFinish(event)
+        handleFinish(event)
         return false
       }
       default: {
@@ -74,22 +93,30 @@ const Mark = forwardRef(function Mark ({
   transform = mark.angle ? `${transform} rotate(${mark.angle})` : transform
 
   return (
-    <StyledGroup
-      {...mainStyle}
-      aria-label={label}
-      dragging={dragging}
-      focusable
-      focusColor={focusColor}
-      onFocus={select}
-      onKeyDown={onKeyDown}
-      ref={ref}
-      role='button'
-      strokeWidth={isActive ? SELECTED_STROKE_WIDTH / scale : STROKE_WIDTH / scale}
-      tabIndex='0'
-      transform={transform}
-    >
-      {children}
-    </StyledGroup>
+    <>
+      <StyledGroup
+        {...mainStyle}
+        aria-label={label}
+        dragging={dragging}
+        focusable
+        focusColor={focusColor}
+        onClick={(event) => handleFinish(event)}
+        onFocus={select}
+        onKeyDown={onKeyDown}
+        ref={ref}
+        role='button'
+        strokeWidth={isActive ? SELECTED_STROKE_WIDTH / scale : STROKE_WIDTH / scale}
+        tabIndex='0'
+        transform={transform}
+      >
+        {children}
+      </StyledGroup>
+      <SubTaskPopup
+        subTaskMarkBounds={bounds}
+        subTaskVisibility={subTaskVisibility}
+        setSubTaskVisibility={setSubTaskVisibility}
+      />
+    </>
   )
 })
 

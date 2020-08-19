@@ -13,14 +13,14 @@ const MIN_POPUP_HEIGHT = 100
 
 function SubTaskPopup(props) {
   const {
-    activeMark
+    activeMark,
+    subTaskMarkBounds,
+    subTaskVisibility,
+    setSubTaskVisibility
   } = props
 
   const {
-    subTaskMarkBounds,
-    subTaskVisibility,
-    subTaskPreviousAnnotationValues,
-    setSubTaskVisibility
+    subTaskPreviousAnnotationValues
   } = activeMark
   if (!subTaskVisibility) return null
 
@@ -28,11 +28,11 @@ function SubTaskPopup(props) {
   const ready = true // TODO: check with TaskArea/components/Tasks/Tasks.js
   const tasks = (activeMark?.tasks) ? activeMark.tasks : []
 
-  
   function close() {
     setSubTaskVisibility(false)
   }
 
+  console.log('bounds', subTaskMarkBounds)
   const defaultPosition = getDefaultPosition(subTaskMarkBounds, MIN_POPUP_HEIGHT, MIN_POPUP_WIDTH)
 
   return (

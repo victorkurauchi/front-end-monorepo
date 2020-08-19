@@ -88,11 +88,12 @@ const BaseMark = types.model('BaseMark', {
   }))
   .actions(self => {
     function setSubTaskVisibility (visible, drawingMarkNode, previousAnnotationValues) {
+      console.log('calling set sub task vis')
       if(self.tasks.length > 0) {
-        self.subTaskVisibility = visible
-        self.subTaskMarkBounds = (drawingMarkNode)
-        ? drawingMarkNode.getBoundingClientRect()
-        : undefined
+        // self.subTaskVisibility = visible
+        // self.subTaskMarkBounds = (drawingMarkNode)
+        // ? drawingMarkNode.getBoundingClientRect()
+        // : undefined
         if (previousAnnotationValues?.length > 0) {
           previousAnnotationValues.forEach((previousAnnotationValue) => {
             self.subTaskPreviousAnnotationValues.put(previousAnnotationValue)

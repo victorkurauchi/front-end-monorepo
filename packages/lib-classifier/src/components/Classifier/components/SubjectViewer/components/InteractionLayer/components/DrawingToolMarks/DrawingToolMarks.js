@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useLayoutEffect } from 'react'
 import { observer } from 'mobx-react'
 import PropTypes from 'prop-types'
 import { DeleteButton, Mark } from '@plugins/drawingTools/components'
@@ -22,10 +22,9 @@ function DrawingToolMarks (props) {
     const MarkingComponent = observer(mark.toolComponent)
     const ObservedDeleteButton = observer(DeleteButton)
     const isActive = mark.id === activeMark?.id
-    const ref = React.createRef()
-    
+
     function onFinishWithRef (event) {
-      onFinish(event, ref.current)
+      onFinish(event)
     }
 
     function isInBounds (markElement) {
@@ -39,7 +38,7 @@ function DrawingToolMarks (props) {
     }
 
     function deleteMark () {
-      activeMark.setSubTaskVisibility(false)
+      // activeMark.setSubTaskVisibility(false)
       tool.deleteMark(mark)
       onDelete(mark)
     }
@@ -81,7 +80,6 @@ function DrawingToolMarks (props) {
         onDelete={deleteMark}
         onFinish={onFinishWithRef}
         onSelect={selectMark}
-        ref={ref}
         scale={scale}
       >
         <MarkingComponent
