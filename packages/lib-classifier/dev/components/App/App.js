@@ -78,6 +78,7 @@ class App extends React.Component {
   }
 
   render () {
+    let subjectId
     if (!this.state.project) {
       return (
         <div>Loading project data...</div>
@@ -85,6 +86,11 @@ class App extends React.Component {
     }
 
     const mergedThemes = _.merge({}, baseTheme, zooTheme, { dark: this.state.dark })
+
+    if (window.location && window.location.search) {
+      const { subject } = queryString.parse(window.location.search)
+      subjectId = subject
+    }
 
     return (
       <Grommet 
@@ -109,6 +115,7 @@ class App extends React.Component {
               onAddToCollection={(subjectId) => console.log(subjectId)}
               onCompleteClassification={(classification, subject) => console.log('onComplete', classification, subject)}
               project={this.state.project}
+              subjectId={subjectId}
               subjectSetID={this.props.subjectSetID}
               workflowID={this.props.workflowID}
             />

@@ -2,7 +2,6 @@ import { autorun } from 'mobx'
 import { addDisposer, flow, getRoot, tryReference, types } from 'mobx-state-tree'
 import ResourceStore from '../ResourceStore'
 import Workflow from '../Workflow'
-import queryString from 'query-string'
 
 const WorkflowStore = types
   .model('WorkflowStore', {
@@ -67,7 +66,7 @@ const WorkflowStore = types
       return id
     }
 
-    function * selectWorkflow (id = getDefaultWorkflowId(), subjectSetID) {
+    function * selectWorkflow (id = getDefaultWorkflowId(), subjectSetID, subjectId) {
       if (id) {
         const activeWorkflows = self.project?.links?.active_workflows || []
         const projectID = self.project?.id
@@ -79,7 +78,19 @@ const WorkflowStore = types
             // wait for the subject set to load before activating the workflow
             const subjectSet = yield selectedWorkflow.selectSubjectSet(subjectSetID)
           }
+
           self.setActive(id)
+
+          if (subjectId) {
+            const rootStore = getRoot(self)
+            const subject = yield rootStore.subjects.getResource(subjectId)
+            rootStore.subjects.setActive(subject.id)
+            rootStore.classifications.reset()
+            rootStore.classifications.createClassification(subject, workflow, self.project)
+            rootStore.feedback.onNewSubject()
+            rootStore.subjects.populateQueue()
+          }
+
         } else {
           throw new ReferenceError(`unable to load workflow ${id} for project ${projectID}`)
         }

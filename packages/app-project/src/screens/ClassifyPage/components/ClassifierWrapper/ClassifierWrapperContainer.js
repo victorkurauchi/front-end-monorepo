@@ -5,6 +5,7 @@ import { func, shape } from 'prop-types'
 import React, { Component } from 'react'
 import asyncStates from '@zooniverse/async-states'
 import ErrorMessage from './components/ErrorMessage'
+import queryString from 'query-string'
 
 function storeMapper (stores) {
   const { collections, project, recents, user, yourStats } = stores.store
@@ -61,6 +62,7 @@ class ClassifierWrapperContainer extends Component {
   }
 
   render () {
+    let subjectId
     const { onAddToCollection, authClient, mode, project, subjectSetID, user, workflowID } = this.props
     const somethingWentWrong = this.state.error || project.loadingState === asyncStates.error
 
@@ -80,6 +82,11 @@ class ClassifierWrapperContainer extends Component {
       )
     }
 
+    if (window.location && window.location.search) {
+      const { subject } = queryString.parse(window.location.search)
+      subjectId = subject
+    }
+
     if (project.loadingState === asyncStates.success) {
       const key = user.id || 'no-user'
       return (
@@ -91,6 +98,7 @@ class ClassifierWrapperContainer extends Component {
           onCompleteClassification={this.onCompleteClassification}
           onToggleFavourite={this.onToggleFavourite}
           project={project}
+          subjectId={subjectId}
           subjectSetID={subjectSetID}
           workflowID={workflowID}
         />
