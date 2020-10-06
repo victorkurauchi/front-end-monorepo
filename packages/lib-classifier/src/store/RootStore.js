@@ -48,6 +48,7 @@ const RootStore = types
       const subject = tryReference(() => subjects?.active)
       const workflow = tryReference(() => workflows?.active)
       const project = tryReference(() => projects?.active)
+
       if (subject && workflow && project) {
         workflowSteps.resetSteps()
         classifications.reset()

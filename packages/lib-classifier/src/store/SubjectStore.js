@@ -68,8 +68,8 @@ const SubjectStore = types
       const workflowDisposer = autorun(() => {
         const validWorkflowReference = isValidReference(() => getRoot(self).workflows.active)
         if (validWorkflowReference) {
-          self.reset()
-          self.populateQueue()
+          // self.reset()
+          // self.populateQueue()
         }
       }, { name: 'SubjectStore Workflow Observer autorun' })
       addDisposer(self, workflowDisposer)
