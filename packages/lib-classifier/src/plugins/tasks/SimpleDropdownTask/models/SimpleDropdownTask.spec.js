@@ -35,11 +35,12 @@ describe('Model > SimpleDropdownTask', function () {
   })
 
   describe('with an annotation', function () {
+    let annotation
     let task
 
     before(function () {
       task = SimpleDropdownTask.TaskModel.create(simpleDropdownTask)
-      const annotation = task.defaultAnnotation
+      annotation = task.defaultAnnotation
       const store = types.model('MockStore', {
         annotation: SimpleDropdownTask.AnnotationModel,
         task: SimpleDropdownTask.TaskModel
@@ -56,7 +57,7 @@ describe('Model > SimpleDropdownTask', function () {
     })
 
     it('should update annotations', function () {
-      task.updateAnnotation({
+      annotation.update({
         selection: 5,  // Corresponds to "Black"
         option: true,
       })
@@ -66,12 +67,13 @@ describe('Model > SimpleDropdownTask', function () {
   })
 
   describe('when required', function () {
+    let annotation
     let task
 
     before(function () {
       const requiredTask = Object.assign({}, simpleDropdownTask, { required: true })
       task = SimpleDropdownTask.TaskModel.create(requiredTask)
-      const annotation = task.defaultAnnotation
+      annotation = task.defaultAnnotation
       const store = types.model('MockStore', {
         annotation: SimpleDropdownTask.AnnotationModel,
         task: SimpleDropdownTask.TaskModel
@@ -91,7 +93,7 @@ describe('Model > SimpleDropdownTask', function () {
 
     describe('with a complete annotation', function () {
       it('should be complete', function () {
-        task.updateAnnotation({
+        annotation.update({
           selection: 5,
           option: true,
         })
