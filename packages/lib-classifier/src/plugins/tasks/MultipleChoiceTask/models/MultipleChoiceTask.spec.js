@@ -37,15 +37,15 @@ describe('Model > MultipleChoiceTask', function () {
     })
 
     it('should be a valid annotation', function () {
-      const annotation = task.defaultAnnotation
+      const annotation = task.defaultAnnotation()
       expect(annotation.id).to.be.ok()
       expect(annotation.task).to.equal('T2')
       expect(annotation.taskType).to.equal('multiple')
     })
 
     it('should generate unique annotations', function () {
-      const firstAnnotation = task.defaultAnnotation
-      const secondAnnotation = task.defaultAnnotation
+      const firstAnnotation = task.defaultAnnotation()
+      const secondAnnotation = task.defaultAnnotation()
       expect(firstAnnotation.id).to.not.equal(secondAnnotation.id)
     })
   })
@@ -55,7 +55,7 @@ describe('Model > MultipleChoiceTask', function () {
 
     before(function () {
       task = MultipleChoiceTask.TaskModel.create(multipleChoiceTask)
-      const annotation = task.defaultAnnotation
+      const annotation = task.defaultAnnotation()
       const store = types.model('MockStore', {
         annotation: MultipleChoiceTask.AnnotationModel,
         task: MultipleChoiceTask.TaskModel
@@ -83,7 +83,7 @@ describe('Model > MultipleChoiceTask', function () {
     before(function () {
       const requiredTask = Object.assign({}, multipleChoiceTask, { required: 'true' })
       task = MultipleChoiceTask.TaskModel.create(requiredTask)
-      const annotation = task.defaultAnnotation
+      const annotation = task.defaultAnnotation()
       const store = types.model('MockStore', {
         annotation: MultipleChoiceTask.AnnotationModel,
         task: MultipleChoiceTask.TaskModel

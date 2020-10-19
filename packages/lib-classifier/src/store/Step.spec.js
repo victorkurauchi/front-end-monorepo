@@ -60,8 +60,8 @@ describe('Model > Step', function () {
         SingleChoiceTask.TaskModel.create(SingleChoiceTaskFactory.build({ taskKey: 'T2', required: 'true' }))
       ]
       step = Step.create({ stepKey: 'S1', taskKeys: ['T1', 'T2'], tasks })
-      const multipleChoiceAnnotation = tasks[0].defaultAnnotation
-      const singleChoiceAnnotation = tasks[1].defaultAnnotation
+      const multipleChoiceAnnotation = tasks[0].defaultAnnotation()
+      const singleChoiceAnnotation = tasks[1].defaultAnnotation()
       const store = types.model({
         annotations: types.array(types.union(MultipleChoiceTask.AnnotationModel, SingleChoiceTask.AnnotationModel)),
         step: Step

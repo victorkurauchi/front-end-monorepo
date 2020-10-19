@@ -11,10 +11,10 @@ const Task = types.model('Task', {
 })
   .views(self => ({
 
-    get defaultAnnotation () {
+    defaultAnnotation (id = cuid()) {
     // Override this in a real task
       return Annotation.create({
-        id: cuid(),
+        id,
         task: self.taskKey,
         taskType: self.type
       })
@@ -36,7 +36,7 @@ const Task = types.model('Task', {
     },
 
     createAnnotation () {
-      const newAnnotation = self.defaultAnnotation
+      const newAnnotation = self.defaultAnnotation()
       return newAnnotation
     },
 
